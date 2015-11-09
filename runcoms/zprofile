@@ -17,7 +17,7 @@ fi
 # Editors
 #
 
-export EDITOR='nano'
+export EDITOR='vim'
 export VISUAL='nano'
 export PAGER='less'
 
@@ -47,7 +47,8 @@ path=(
   $path
 )
 
-#
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting¬
+
 # Less
 #
 
@@ -72,3 +73,5 @@ if [[ ! -d "$TMPDIR" ]]; then
 fi
 
 TMPPREFIX="${TMPDIR%/}/zsh"
+
+export ANDROID_HVPROTO=ddm

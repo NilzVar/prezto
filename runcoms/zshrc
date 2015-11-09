@@ -1,14 +1,78 @@
-#
-# Executes commands at the start of an interactive session.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
-#
-
-# Source Prezto.
+# ~/.zshrc
+# vim:set et sw=2 foldmethod=marker:
+# Source Prezto {{{1
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Customize to your needs...
+# }}}1
+# Gimme 256 colors
+[[ "$TERM" == "xterm" ]] && export TERM=xterm-256color
+
+fpath=( ~/.zfunc "${fpath[@]}" )
+
+# Prompt {{{1
+# Source the zsh-git-prompt and format prompt
+source ~/projects/Zsh/zsh-git-prompt/zshrc.sh
+
+local usercolor="$fg_bold[yellow]"
+local dircolor="$fg_bold[blue]"
+case "$TERM" in
+    *-256color)
+        usercolor=$'\e[38;5;184m'
+        dircolor=$'\e[38;5;27m'
+        ;;
+    *-88color|rxvt-unicode)
+        usercolor=$'\e[38;5;56m'
+        dircolor=$'\e[38;5;23m'
+        ;;
+esac
+reset_color=$'\e[00m'
+
+PROMPT='%{$usercolor%}%n%{$reset_color%}:%{$dircolor%}%30<...<%~%<<%{$reset_color%}$(git_super_status)%# '
+RPS1="%(?..(%{"$'\e[01;35m'"%}%?%{$reset_color%}%)%<<)"
+setopt promptsubst
+
+#unset dircolor usercolor reset_color
+
+# }}}1
+# Aliases {{{1
+# A nice git log output
 alias gitlog="git log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short"
+
+# Aliases for Tmux
+alias tmux='tmux -2'
+alias ta='tmux attach -t'
+alias tnew='tmux new -s'
+alias tls='tmux ls'
+alias tkill='tmux kill-session -t'
+
+# Convenience alises for editing configs
+alias ev='vim ~/.vimrc'
+alias et='vim ~/.tmux.conf'
+alias ez='vim ~/.zshrc'
+alias ep='vim ~/.pentadactylrc'
+
+# }}}1
+# Bindings {{{1
+# Use vim cli mode
+bindkey '^P' up-history
+bindkey '^N' down-history
+
+# backspace and ^h working even after
+# returning from command mode
+bindkey '^?' backward-delete-char
+bindkey '^h' backward-delete-char
+
+#ctrl-w removed word backwards
+bindkey '^w' backward-kill-word
+
+# ctrl-r starts searching history backward
+bindkey '^r' history-incremental-search-backward
+
+# }}}1
+# Options {{{1
+
+HISTSIZE=100
+# }}}1
+autoload -Uz int-ip
